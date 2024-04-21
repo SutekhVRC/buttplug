@@ -312,10 +312,9 @@ impl HardwareInternal for SerialPortHardware {
     let data = msg.data.clone();
     // TODO Should check endpoint validity
     async move {
-      sender
-        .send(data)
-        .await
-        .expect("Tasks should exist if we get here.");
+      if sender.send(data).await.is_err() {
+        warn!("Tasks should exist if we get here, but may not if we're shutting down");
+      }
       Ok(())
     }
     .boxed()

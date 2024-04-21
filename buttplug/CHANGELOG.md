@@ -1,3 +1,139 @@
+# 7.1.16 (2024-04-20)
+
+## Features
+
+- Added Device Support
+  - JoyHub TrueForm
+  - JoyHub Rhythmic 3
+  - JoyHub Mysticolor
+  - JoyHub Vivid Wings
+  - JoyHub Deena
+  - JoyHub Cherly
+  - JoyHub Cherly 2c
+  - JoyHub Pathfinder 2
+  - JoyHub Angela
+  - JoyHub Verax
+  - JoyHub Verax 2
+  - JoyHub Euphoric 2
+  - JoyHub RoseBUD
+  - JoyHub Starfish
+  - JoyHub Resi Ring 2
+  - Kiiroo Pearl 2+
+  - Kiiroo Pearl 3
+  - Momonii Agatha
+  - Lioness
+
+## Bugfixes
+
+- Correct the feature order for the JoyHub PearlConch
+- Fix the mode byte on the MotorBunny rotate command
+- Fix for Lovense Solace V31 stop command
+- Fix a RwLock timing issue
+- Miizzzee protocol implementation cleanup
+
+# 7.1.15 (2024-03-17)
+
+## Features
+
+- Added Device Support
+  - Joyhub Firedragon
+
+## Bugfixes
+
+- Turn several .expect()'s into warn!() log messages
+  - Mostly in Lovense Dongle handling. A lot of people have this on without knowing it and it
+    doesn't react well to being shut down right now. We get several thousand sentry reports a week about this. God I fucking hate the Lovense Dongle.
+
+# 7.1.14 (2024-03-16)
+
+## Features
+
+- Added Device Support
+  - Sensee Capsule
+  - MysteryVibe Legato
+  - Meese Modo
+  - JoyHub Elixir Egg, Retro Guard, Vib Trefoil, Pearl Conch, TrueForm 3, Petite Rose, Moon Horn,
+    PAnther, Mecha, Lagoon 
+
+# Bugfixes
+
+- Device Fixes
+  - New Satisfier Pro 2 Gen 3 identifier
+  - New Svakom Vick Neo identifier
+  - Correct Motorbunny rotation command
+
+# 7.1.13 (2024-01-27)
+
+## Features
+
+- Added Device Support
+  - metaXsire Upton, Tadpole
+  - Svakom Pulse Galaxie
+  - JoyHub VibSiren
+
+## Bugfixes
+
+- Warning log message on Svakom Sam known not to have speed control
+- Added more logging to bluetooth writes and device init
+  - In service of debugging issues with Lovense Solace w/ v31 firmware
+
+# 7.1.12 (2024-01-21)
+
+## Features
+
+- Move from async-tungstenite to tokio-tungstenite
+  - We only build for tokio at this point anyways (outside of wasm)
+  - Easier to integrate with rustls, removes OpenSSL requirement on some platforms
+- Added Device Support
+  - Mysteryvibe Molto
+  - Svakom Alberta, Ava Neo
+  - MonsterPub Gen 2+ (multiple devices)
+  - Joyhub Petalwish 2
+  - metaXsire Nolan
+  - Cooxer Bullet Vibe
+  - iToys Seagull
+  - Coleur Dor VX045A
+  - Coleur Dor VX236A
+  - Coleur Dor DT250A
+  - Svakom Winni 2
+  - Svakom Magic Suitcase
+  - metaXsire Tay
+  - Leten devices (mostly legacy now they seem to have moved to MuSe)
+  - Lovense Ambi (new UUIDs)
+  - Svakom Alex Neo 2 (new identifier)
+  - JoyHub Vortex Tongue
+  - JoyHub Velocity
+  - JoyHub Rosella 2
+  - Lelo Hugo 2
+  - Svakom Magic Suitcase
+  - OhMiBod Sphinx
+  - MizzZee v3
+  - Vibcrafter (multiple devices)
+
+## Bugfixes
+
+- Streamed JSON now handled by serializer
+  - May fix issues with some older Buttplug C# programs.
+- Lovense Lapis now controls all 3 vibrators using Lovense Connect
+- Lovense Solace works via Lovense Connect
+- Fix mode flags on Foreo devices
+- Add new BLE name for Sinoli devices
+
+# 7.1.11 (2023-11-18)
+
+## Bugfixes
+
+- Update to btleplug 0.11.3
+  - Fix macOS missing import issue
+
+# 7.1.10 (2023-11-18)
+
+## Bugfixes
+
+- Update to btleplug 0.11.2
+  - Fixes issue with non-UTF-8 advertisement names in Android, which blocked Lovense Solace
+    connection
+
 # 7.1.9 (2023-11-15)
 
 ## Features

@@ -9,10 +9,8 @@ use super::lovense_connect_service_hardware::LovenseServiceHardwareConnector;
 use crate::{
   core::errors::ButtplugDeviceError,
   server::device::hardware::communication::{
-    HardwareCommunicationManager,
-    HardwareCommunicationManagerBuilder,
-    HardwareCommunicationManagerEvent,
-    TimedRetryCommunicationManager,
+    HardwareCommunicationManager, HardwareCommunicationManagerBuilder,
+    HardwareCommunicationManagerEvent, TimedRetryCommunicationManager,
     TimedRetryCommunicationManagerImpl,
   },
 };
@@ -141,19 +139,19 @@ pub(super) async fn get_local_info(host: &str) -> Option<LovenseServiceLocalInfo
         return None;
       }
 
-      let text = res
-        .text()
-        .await
-        .expect("If we got a 200 back, we should at least have text.");
-      let info: LovenseServiceLocalInfo = serde_json::from_str(&text)
-        .expect("Should always get json back from service, if we got a response.");
-
-      // If no toys are connected
-      if info.data.len() == 0 {
-        return None;
+      match res.text().await {
+        Ok(text) => match serde_json::from_str(&text) {
+          Ok(info) => Some(info),
+          Err(e) => {
+            warn!("Should always get json back from service, if we got a response: ${e}");
+            None
+          }
+        },
+        Err(e) => {
+          warn!("If we got a 200 back, we should at least have text: ${e}");
+          None
+        }
       }
-      
-      Some(info)
     }
     Err(err) => {
       error!(
@@ -227,14 +225,17 @@ impl TimedRetryCommunicationManagerImpl for LovenseConnectServiceCommunicationMa
     match std::env::var("VCLC_HOST_PORT") {
       Ok(v) => {
         let host = format!("http://{}", v);
-        info!("Inserting {} into known_hosts for Lovense Connect Comm Manager", host);
+        info!(
+          "Inserting {} into known_hosts for Lovense Connect Comm Manager",
+          host
+        );
         // Do not add more than one override host
         if self.lc_override.len() == 0 {
           info!("Creating LC Override");
           self.lc_override.insert(host.clone());
           self.known_hosts.insert(host);
         }
-      },
+      }
       Err(_) => {
         info!("Failed to get VCLC_HOST_PORT env var removing all from known_hosts");
         // Only clear hosts if there was an override set
@@ -243,10 +244,8 @@ impl TimedRetryCommunicationManagerImpl for LovenseConnectServiceCommunicationMa
           self.known_hosts.clear();
           self.lc_override.clear();
         }
-      },
+      }
     }
-
-
 
     // If we already know about a local host, check it. Otherwise, query remotely to look for local
     // hosts.

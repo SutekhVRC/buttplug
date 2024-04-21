@@ -1,6 +1,6 @@
 // Buttplug Rust Source Code File - See https://buttplug.io for more info.
 //
-// Copyright 2016-2023 Nonpolynomial Labs LLC. All rights reserved.
+// Copyright 2016-2024 Nonpolynomial Labs LLC. All rights reserved.
 //
 // Licensed under the BSD 3-Clause license. See LICENSE file in the project root
 // for full license information.
@@ -13,45 +13,59 @@ use crate::{
   },
 };
 
-generic_protocol_setup!(SvakomV3, "svakom-v3");
+generic_protocol_setup!(SenseeCapsule, "sensee-capsule");
 
 #[derive(Default)]
-pub struct SvakomV3 {}
+pub struct SenseeCapsule {}
 
-impl ProtocolHandler for SvakomV3 {
+impl ProtocolHandler for SenseeCapsule {
   fn keepalive_strategy(&self) -> super::ProtocolKeepaliveStrategy {
     super::ProtocolKeepaliveStrategy::RepeatLastPacketStrategy
   }
 
   fn handle_scalar_vibrate_cmd(
     &self,
-    index: u32,
+    _index: u32,
     scalar: u32,
   ) -> Result<Vec<HardwareCommand>, ButtplugDeviceError> {
     Ok(vec![HardwareWriteCmd::new(
       Endpoint::Tx,
-      [
+      vec![
         0x55,
-        if index == 0 { 0x03 } else { 0x09 },
-        if index == 0 { 0x03 } else { 0x00 },
+        0xaa,
+        0xf0,
+        0x01,
         0x00,
-        if scalar == 0 { 0x00 } else { 0x01 },
-        scalar as u8,
-      ]
-      .to_vec(),
+        0x12,
+        0x66,
+        0xf9,
+        0xf0 | scalar as u8,
+      ],
       false,
     )
     .into()])
   }
 
-  fn handle_scalar_rotate_cmd(
+  fn handle_scalar_constrict_cmd(
     &self,
     _index: u32,
     scalar: u32,
   ) -> Result<Vec<HardwareCommand>, ButtplugDeviceError> {
     Ok(vec![HardwareWriteCmd::new(
       Endpoint::Tx,
-      [0x55, 0x08, 0x00, 0x00, scalar as u8, 0xff].to_vec(),
+      vec![
+        0x55,
+        0xaa,
+        0xf0,
+        0x01,
+        0x00,
+        0x11,
+        0x66,
+        0xf2,
+        0xf0 | scalar as u8,
+        0x00,
+        0x00,
+      ],
       false,
     )
     .into()])
